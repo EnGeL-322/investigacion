@@ -22,6 +22,7 @@ PASOS = [
     "04_series_tiempo.py",
     "05_validacion_cruzada.py",
     "06_figuras_y_resumen.py",
+    "07_matriz_confusion.py",
 ]
 
 

@@ -51,7 +51,8 @@ investigacion/
 │   ├── 03_regresion_multiple.py      # MCO, Ridge y otros modelos para el valor continuo
 │   ├── 04_series_tiempo.py           # ingenuo, deriva, suavizamiento, Holt y AR(1)
 │   ├── 05_validacion_cruzada.py      # cinco esquemas de validación
-│   └── 06_figuras_y_resumen.py       # figuras y resumen en JSON
+│   ├── 06_figuras_y_resumen.py       # figuras y resumen en JSON
+│   └── 07_matriz_confusion.py        # matriz de confusión, falsos positivos y métricas por categoría
 ├── tests/                            # una prueba por método (pytest)
 │   ├── test_mae.py
 │   ├── test_rmse.py
@@ -63,6 +64,7 @@ investigacion/
 │   ├── test_indice_idr.py
 │   ├── test_pares_temporales.py
 │   ├── test_clasificacion.py
+│   ├── test_matriz_confusion.py
 │   ├── test_regresion_multiple.py
 │   ├── test_series_tiempo.py
 │   └── test_validacion_cruzada.py
@@ -103,11 +105,12 @@ python -m pytest tests/test_mae.py -v     # solo una
 | `test_indice_idr.py` | 72 casos de calibración, cortes de Jenks, 237 categorías iguales a las publicadas y que alterar años futuros no cambia la calibración |
 | `test_pares_temporales.py` | 225 pares, 213 observables, objetivo = año siguiente, 117 objetivos de prueba |
 | `test_clasificacion.py` | Accuracy y F1 de la Tabla 2 del artículo |
+| `test_matriz_confusion.py` | Matriz y métricas por categoría a mano e iguales a scikit-learn; diagonales del estudio; ningún error Bajo↔Alto |
 | `test_regresion_multiple.py` | R² = 0,90, MCO igual a las ecuaciones normales y errores de la persistencia y del MCO |
 | `test_series_tiempo.py` | MAE y RMSE de la Tabla 3 y que el ingenuo solo usa el año anterior |
 | `test_validacion_cruzada.py` | MAE de Ridge por esquema y que el resultado se invierte al respetar el tiempo |
 
-Resultado actual: **68 pruebas aprobadas y 1 fallo esperado** (`xfail`). El fallo esperado es XGBoost, que no coincide con el artículo (ver abajo).
+Resultado actual: **77 pruebas aprobadas y 1 fallo esperado** (`xfail`). El fallo esperado es XGBoost, que no coincide con el artículo (ver abajo).
 
 ## Datos
 
@@ -139,6 +142,33 @@ El detalle de cada variable está en [`data/DICCIONARIO_DATOS.md`](data/DICCIONA
 | Máquina de soporte vectorial | 0,6752 | 0,6834 |
 | Clase mayoritaria | 0,4530 | 0,2078 |
 | XGBoost (ver nota) | 0,7692 | 0,7758 |
+
+**Matriz de confusión (análisis complementario, no incluido en el artículo)**
+
+Filas = categoría real, columnas = categoría predicha. La diagonal son los aciertos.
+
+| Regresión logística | Pred. Bajo | Pred. Medio | Pred. Alto |
+|---|---|---|---|
+| Real Bajo (44) | **33** | 11 | 0 |
+| Real Medio (53) | 5 | **38** | 10 |
+| Real Alto (20) | 0 | 1 | **19** |
+
+| Persistencia | Pred. Bajo | Pred. Medio | Pred. Alto |
+|---|---|---|---|
+| Real Bajo (44) | **36** | 8 | 0 |
+| Real Medio (53) | 5 | **40** | 8 |
+| Real Alto (20) | 0 | 5 | **15** |
+
+| Categoría | Modelo | Precisión | Recall | F1 | Falsos positivos | Falsos negativos |
+|---|---|---|---|---|---|---|
+| Bajo | Logística | 0,868 | 0,750 | 0,805 | 5 | 11 |
+| Bajo | Persistencia | 0,878 | 0,818 | 0,847 | 5 | 8 |
+| Medio | Logística | 0,760 | 0,717 | 0,738 | 12 | 15 |
+| Medio | Persistencia | 0,755 | 0,755 | 0,755 | 13 | 13 |
+| Alto | Logística | 0,655 | 0,950 | 0,776 | 10 | 1 |
+| Alto | Persistencia | 0,652 | 0,750 | 0,698 | 8 | 5 |
+
+Ningún modelo confunde Bajo con Alto: todos los errores ocurren entre categorías vecinas. La logística detecta mejor las regiones de desarrollo alto (19 de 20) y la persistencia acierta más en las bajas y medias. Las matrices de los seis modelos están en `results/fig_matrices_confusion.png`.
 
 **Valor continuo**
 
@@ -186,4 +216,3 @@ Versiones con las que se probó: Python 3.13, numpy 2.5, pandas 3.0, scikit-lear
 - Roberts, D. R., et al. (2017). Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. *Ecography, 40*(8), 913–929. https://doi.org/10.1111/ecog.02881
 
 La lista completa está en el artículo.
-"# investigacion" 

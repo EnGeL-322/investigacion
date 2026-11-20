@@ -156,81 +156,154 @@ year_y
 === 06_figuras_y_resumen.py ===
 OK: figuras y JSON
 
+=== 07_matriz_confusion.py ===
+
+=== Regresión logística: 90 aciertos de 117 (accuracy 0.7692, F1 macro 0.7728)
+            pred Bajo  pred Medio  pred Alto
+real Bajo          33          11          0
+real Medio          5          38         10
+real Alto           0           1         19
+categoria  soporte  VP  FP  FN  VN  precision  recall  especificidad    F1
+     Bajo       44  33   5  11  68      0.868   0.750          0.932 0.805
+    Medio       53  38  12  15  52      0.760   0.717          0.812 0.738
+     Alto       20  19  10   1  87      0.655   0.950          0.897 0.776
+
+=== XGBoost: 90 aciertos de 117 (accuracy 0.7692, F1 macro 0.7758)
+            pred Bajo  pred Medio  pred Alto
+real Bajo          34          10          0
+real Medio          7          36         10
+real Alto           0           0         20
+categoria  soporte  VP  FP  FN  VN  precision  recall  especificidad    F1
+     Bajo       44  34   7  10  66      0.829   0.773          0.904 0.800
+    Medio       53  36  10  17  54      0.783   0.679          0.844 0.727
+     Alto       20  20  10   0  87      0.667   1.000          0.897 0.800
+
+=== Persistencia: 91 aciertos de 117 (accuracy 0.7778, F1 macro 0.7665)
+            pred Bajo  pred Medio  pred Alto
+real Bajo          36           8          0
+real Medio          5          40          8
+real Alto           0           5         15
+categoria  soporte  VP  FP  FN  VN  precision  recall  especificidad    F1
+     Bajo       44  36   5   8  68      0.878   0.818          0.932 0.847
+    Medio       53  40  13  13  51      0.755   0.755          0.797 0.755
+     Alto       20  15   8   5  89      0.652   0.750          0.918 0.698
+
+=== Random Forest: 86 aciertos de 117 (accuracy 0.7350, F1 macro 0.7426)
+            pred Bajo  pred Medio  pred Alto
+real Bajo          31          13          0
+real Medio          6          35         12
+real Alto           0           0         20
+categoria  soporte  VP  FP  FN  VN  precision  recall  especificidad    F1
+     Bajo       44  31   6  13  67      0.838   0.705          0.918 0.765
+    Medio       53  35  13  18  51      0.729   0.660          0.797 0.693
+     Alto       20  20  12   0  85      0.625   1.000          0.876 0.769
+
+=== Máquina de soporte vectorial: 79 aciertos de 117 (accuracy 0.6752, F1 macro 0.6834)
+            pred Bajo  pred Medio  pred Alto
+real Bajo          29          15          0
+real Medio          9          33         11
+real Alto           0           3         17
+categoria  soporte  VP  FP  FN  VN  precision  recall  especificidad    F1
+     Bajo       44  29   9  15  64      0.763   0.659          0.877 0.707
+    Medio       53  33  18  20  46      0.647   0.623          0.719 0.635
+     Alto       20  17  11   3  86      0.607   0.850          0.887 0.708
+
+=== Clase mayoritaria: 53 aciertos de 117 (accuracy 0.4530, F1 macro 0.2078)
+            pred Bajo  pred Medio  pred Alto
+real Bajo           0          44          0
+real Medio          0          53          0
+real Alto           0          20          0
+categoria  soporte  VP  FP  FN  VN  precision  recall  especificidad    F1
+     Bajo       44   0   0  44  73      0.000     0.0            1.0 0.000
+    Medio       53  53  64   0   0      0.453     1.0            0.0 0.624
+     Alto       20   0   0  20  97      0.000     0.0            1.0 0.000
+
+OK: matrices de confusión verificadas contra accuracy y F1 macro del paso 2
+
 === Pruebas (tests/) ===
 ============================= test session starts ==============================
 platform linux -- Python 3.13.18, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
 rootdir: /home/claude/repo/investigacion
 plugins: platformdirs-4.13.0, anyio-4.15.1
-collecting ... collected 69 items
+collecting ... collected 78 items
 
 tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[logistica] PASSED [  1%]
 tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[persistencia] PASSED [  2%]
-tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[random_forest] PASSED [  4%]
+tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[random_forest] PASSED [  3%]
 tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[svm] PASSED [  5%]
-tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[mayoritaria] PASSED [  7%]
-tests/test_clasificacion.py::test_ningun_modelo_gana_en_las_dos_metricas PASSED [  8%]
-tests/test_clasificacion.py::test_xgboost_coincide_con_el_articulo XFAIL [ 10%]
-tests/test_clasificacion.py::test_predicciones_solo_de_2020_a_2024 PASSED [ 11%]
-tests/test_datos.py::test_panel_tiene_250_filas_y_16_indicadores PASSED  [ 13%]
-tests/test_datos.py::test_panel_tiene_25_territorios_y_10_anios PASSED   [ 14%]
-tests/test_datos.py::test_cada_territorio_anio_aparece_una_sola_vez PASSED [ 15%]
-tests/test_datos.py::test_hay_71_valores_faltantes PASSED                [ 17%]
-tests/test_datos.py::test_porcentajes_entre_0_y_100 PASSED               [ 18%]
-tests/test_datos.py::test_lima_no_tiene_panel_completo PASSED            [ 20%]
-tests/test_indice_idr.py::test_calibracion_usa_72_casos_de_2015_a_2017 PASSED [ 21%]
-tests/test_indice_idr.py::test_cortes_de_jenks PASSED                    [ 23%]
-tests/test_indice_idr.py::test_se_reconstruyen_237_indices PASSED        [ 24%]
-tests/test_indice_idr.py::test_las_237_categorias_coinciden_con_las_publicadas PASSED [ 26%]
-tests/test_indice_idr.py::test_diferencia_maxima_con_el_idr_publicado_es_de_redondeo PASSED [ 27%]
-tests/test_indice_idr.py::test_cambiar_datos_futuros_no_altera_la_calibracion PASSED [ 28%]
-tests/test_mae.py::test_mae_calculado_a_mano PASSED                      [ 30%]
-tests/test_mae.py::test_mae_coincide_con_scikit_learn PASSED             [ 31%]
-tests/test_mae.py::test_mae_es_cero_si_el_pronostico_es_perfecto PASSED  [ 33%]
-tests/test_mae.py::test_mae_no_cambia_al_desplazar_la_escala PASSED      [ 34%]
-tests/test_mae.py::test_mae_ignora_pares_con_nan PASSED                  [ 36%]
-tests/test_mae.py::test_mae_rechaza_longitudes_distintas PASSED          [ 37%]
-tests/test_mape.py::test_mape_calculado_a_mano PASSED                    [ 39%]
-tests/test_mape.py::test_mape_coincide_con_scikit_learn PASSED           [ 40%]
-tests/test_mape.py::test_mape_excluye_observados_iguales_a_cero PASSED   [ 42%]
-tests/test_mape.py::test_mape_falla_si_todos_los_observados_son_cero PASSED [ 43%]
-tests/test_mape.py::test_mape_es_asimetrico PASSED                       [ 44%]
-tests/test_mape.py::test_mape_depende_del_origen_de_la_escala PASSED     [ 46%]
-tests/test_mase.py::test_mase_calculado_a_mano PASSED                    [ 47%]
-tests/test_mase.py::test_mase_rechaza_entrenamiento_de_un_solo_dato PASSED [ 49%]
-tests/test_mase.py::test_mase_rechaza_escala_nula PASSED                 [ 50%]
-tests/test_pares_temporales.py::test_hay_225_pares_y_213_con_objetivo_observable PASSED [ 52%]
-tests/test_pares_temporales.py::test_el_objetivo_es_siempre_el_anio_siguiente PASSED [ 53%]
-tests/test_pares_temporales.py::test_prueba_externa_tiene_117_objetivos_2020_2024 PASSED [ 55%]
-tests/test_r2.py::test_r2_coincide_con_scikit_learn PASSED               [ 56%]
-tests/test_r2.py::test_r2_es_uno_si_el_ajuste_es_perfecto PASSED         [ 57%]
-tests/test_r2.py::test_r2_es_nan_si_y_es_constante PASSED                [ 59%]
-tests/test_regresion_multiple.py::test_r2_descriptivo_de_la_regresion_con_4_dimensiones PASSED [ 60%]
-tests/test_regresion_multiple.py::test_mco_coincide_con_ecuaciones_normales PASSED [ 62%]
-tests/test_regresion_multiple.py::test_mco_16_indicadores_y_persistencia PASSED [ 63%]
-tests/test_regresion_multiple.py::test_ninguna_regresion_supera_a_la_persistencia PASSED [ 65%]
-tests/test_rmse.py::test_rmse_calculado_a_mano PASSED                    [ 66%]
-tests/test_rmse.py::test_rmse_coincide_con_scikit_learn PASSED           [ 68%]
-tests/test_rmse.py::test_rmse_siempre_mayor_o_igual_que_mae PASSED       [ 69%]
-tests/test_rmse.py::test_rmse_penaliza_mas_un_error_grande PASSED        [ 71%]
-tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[ingenuo] PASSED [ 72%]
-tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[ar1] PASSED [ 73%]
-tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[ses] PASSED [ 75%]
-tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[deriva] PASSED [ 76%]
-tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[holt_amortiguado] PASSED [ 78%]
-tests/test_series_tiempo.py::test_el_ingenuo_tiene_el_menor_error PASSED [ 79%]
-tests/test_series_tiempo.py::test_ingenuo_repite_el_valor_del_anio_anterior PASSED [ 81%]
-tests/test_smape.py::test_smape_calculado_a_mano PASSED                  [ 82%]
-tests/test_smape.py::test_smape_esta_entre_0_y_200 PASSED                [ 84%]
-tests/test_smape.py::test_smape_maximo_es_200 PASSED                     [ 85%]
-tests/test_smape.py::test_smape_cero_entre_cero_vale_cero PASSED         [ 86%]
-tests/test_smape.py::test_smape_es_simetrico PASSED                      [ 88%]
-tests/test_smape.py::test_smape_es_cero_si_el_pronostico_es_perfecto PASSED [ 89%]
-tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[2. Un territorio fuera] PASSED [ 91%]
-tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[3. Un anio objetivo fuera] PASSED [ 92%]
+tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[mayoritaria] PASSED [  6%]
+tests/test_clasificacion.py::test_ningun_modelo_gana_en_las_dos_metricas PASSED [  7%]
+tests/test_clasificacion.py::test_xgboost_coincide_con_el_articulo XFAIL [  8%]
+tests/test_clasificacion.py::test_predicciones_solo_de_2020_a_2024 PASSED [ 10%]
+tests/test_datos.py::test_panel_tiene_250_filas_y_16_indicadores PASSED  [ 11%]
+tests/test_datos.py::test_panel_tiene_25_territorios_y_10_anios PASSED   [ 12%]
+tests/test_datos.py::test_cada_territorio_anio_aparece_una_sola_vez PASSED [ 14%]
+tests/test_datos.py::test_hay_71_valores_faltantes PASSED                [ 15%]
+tests/test_datos.py::test_porcentajes_entre_0_y_100 PASSED               [ 16%]
+tests/test_datos.py::test_lima_no_tiene_panel_completo PASSED            [ 17%]
+tests/test_indice_idr.py::test_calibracion_usa_72_casos_de_2015_a_2017 PASSED [ 19%]
+tests/test_indice_idr.py::test_cortes_de_jenks PASSED                    [ 20%]
+tests/test_indice_idr.py::test_se_reconstruyen_237_indices PASSED        [ 21%]
+tests/test_indice_idr.py::test_las_237_categorias_coinciden_con_las_publicadas PASSED [ 23%]
+tests/test_indice_idr.py::test_diferencia_maxima_con_el_idr_publicado_es_de_redondeo PASSED [ 24%]
+tests/test_indice_idr.py::test_cambiar_datos_futuros_no_altera_la_calibracion PASSED [ 25%]
+tests/test_mae.py::test_mae_calculado_a_mano PASSED                      [ 26%]
+tests/test_mae.py::test_mae_coincide_con_scikit_learn PASSED             [ 28%]
+tests/test_mae.py::test_mae_es_cero_si_el_pronostico_es_perfecto PASSED  [ 29%]
+tests/test_mae.py::test_mae_no_cambia_al_desplazar_la_escala PASSED      [ 30%]
+tests/test_mae.py::test_mae_ignora_pares_con_nan PASSED                  [ 32%]
+tests/test_mae.py::test_mae_rechaza_longitudes_distintas PASSED          [ 33%]
+tests/test_mape.py::test_mape_calculado_a_mano PASSED                    [ 34%]
+tests/test_mape.py::test_mape_coincide_con_scikit_learn PASSED           [ 35%]
+tests/test_mape.py::test_mape_excluye_observados_iguales_a_cero PASSED   [ 37%]
+tests/test_mape.py::test_mape_falla_si_todos_los_observados_son_cero PASSED [ 38%]
+tests/test_mape.py::test_mape_es_asimetrico PASSED                       [ 39%]
+tests/test_mape.py::test_mape_depende_del_origen_de_la_escala PASSED     [ 41%]
+tests/test_mase.py::test_mase_calculado_a_mano PASSED                    [ 42%]
+tests/test_mase.py::test_mase_rechaza_entrenamiento_de_un_solo_dato PASSED [ 43%]
+tests/test_mase.py::test_mase_rechaza_escala_nula PASSED                 [ 44%]
+tests/test_matriz_confusion.py::test_matriz_calculada_a_mano PASSED      [ 46%]
+tests/test_matriz_confusion.py::test_matriz_coincide_con_scikit_learn PASSED [ 47%]
+tests/test_matriz_confusion.py::test_metricas_por_clase_coinciden_con_scikit_learn PASSED [ 48%]
+tests/test_matriz_confusion.py::test_vp_fp_fn_vn_suman_el_total PASSED   [ 50%]
+tests/test_matriz_confusion.py::test_matrices_del_estudio PASSED         [ 51%]
+tests/test_matriz_confusion.py::test_ningun_modelo_confunde_bajo_con_alto PASSED [ 52%]
+tests/test_matriz_confusion.py::test_aciertos_de_logistica_y_persistencia PASSED [ 53%]
+tests/test_matriz_confusion.py::test_recall_de_la_categoria_alta[logistica-0.95] PASSED [ 55%]
+tests/test_matriz_confusion.py::test_recall_de_la_categoria_alta[persistencia-0.75] PASSED [ 56%]
+tests/test_pares_temporales.py::test_hay_225_pares_y_213_con_objetivo_observable PASSED [ 57%]
+tests/test_pares_temporales.py::test_el_objetivo_es_siempre_el_anio_siguiente PASSED [ 58%]
+tests/test_pares_temporales.py::test_prueba_externa_tiene_117_objetivos_2020_2024 PASSED [ 60%]
+tests/test_r2.py::test_r2_coincide_con_scikit_learn PASSED               [ 61%]
+tests/test_r2.py::test_r2_es_uno_si_el_ajuste_es_perfecto PASSED         [ 62%]
+tests/test_r2.py::test_r2_es_nan_si_y_es_constante PASSED                [ 64%]
+tests/test_regresion_multiple.py::test_r2_descriptivo_de_la_regresion_con_4_dimensiones PASSED [ 65%]
+tests/test_regresion_multiple.py::test_mco_coincide_con_ecuaciones_normales PASSED [ 66%]
+tests/test_regresion_multiple.py::test_mco_16_indicadores_y_persistencia PASSED [ 67%]
+tests/test_regresion_multiple.py::test_ninguna_regresion_supera_a_la_persistencia PASSED [ 69%]
+tests/test_rmse.py::test_rmse_calculado_a_mano PASSED                    [ 70%]
+tests/test_rmse.py::test_rmse_coincide_con_scikit_learn PASSED           [ 71%]
+tests/test_rmse.py::test_rmse_siempre_mayor_o_igual_que_mae PASSED       [ 73%]
+tests/test_rmse.py::test_rmse_penaliza_mas_un_error_grande PASSED        [ 74%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[ingenuo] PASSED [ 75%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[ar1] PASSED [ 76%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[ses] PASSED [ 78%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[deriva] PASSED [ 79%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[holt_amortiguado] PASSED [ 80%]
+tests/test_series_tiempo.py::test_el_ingenuo_tiene_el_menor_error PASSED [ 82%]
+tests/test_series_tiempo.py::test_ingenuo_repite_el_valor_del_anio_anterior PASSED [ 83%]
+tests/test_smape.py::test_smape_calculado_a_mano PASSED                  [ 84%]
+tests/test_smape.py::test_smape_esta_entre_0_y_200 PASSED                [ 85%]
+tests/test_smape.py::test_smape_maximo_es_200 PASSED                     [ 87%]
+tests/test_smape.py::test_smape_cero_entre_cero_vale_cero PASSED         [ 88%]
+tests/test_smape.py::test_smape_es_simetrico PASSED                      [ 89%]
+tests/test_smape.py::test_smape_es_cero_si_el_pronostico_es_perfecto PASSED [ 91%]
+tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[2. Un territorio fuera] PASSED [ 92%]
+tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[3. Un anio objetivo fuera] PASSED [ 93%]
 tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[4. Bloques de anios] PASSED [ 94%]
-tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[5. Ventana expansiva] PASSED [ 95%]
+tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[5. Ventana expansiva] PASSED [ 96%]
 tests/test_validacion_cruzada.py::test_kfold_aleatorio_parece_mejor_que_la_persistencia PASSED [ 97%]
 tests/test_validacion_cruzada.py::test_ventana_expansiva_es_peor_que_la_persistencia PASSED [ 98%]
 tests/test_validacion_cruzada.py::test_todos_los_esquemas_evaluan_las_mismas_117_observaciones PASSED [100%]
 
-======================== 68 passed, 1 xfailed in 1.71s =========================
+======================== 77 passed, 1 xfailed in 1.92s =========================
