@@ -1,0 +1,236 @@
+
+=== 01_reproducir_idr.py ===
+Casos con IDR reconstruido: 237 | publicado: 237
+Diferencia absoluta: media=0.0002 max=0.0006 | >0.005: 0
+Categoria coincide en 237 de 237
+Cortes Jenks: [0.       0.360087 0.635511 1.      ]
+    dimension  n_calibration  pc1_variance
+    economica             72         0.889
+       social             72         0.666
+    ambiental             72         0.686
+institucional             72         0.602
+
+=== 02_replicar_clasificacion.py ===
+pares: 225 | con objetivo observable: 213
+2020 ok
+2021 ok
+2022 ok
+2023 ok
+2024 ok
+                   n  accuracy  F1_macro
+model                                   
+xgboost        117.0     0.769     0.776
+logistica      117.0     0.769     0.773
+persistencia   117.0     0.778     0.766
+random_forest  117.0     0.735     0.743
+svm            117.0     0.675     0.683
+mayoritaria    117.0     0.453     0.208
+
+=== 03_regresion_multiple.py ===
+PARTE A | n = 213 pares | territorios = 24
+===================================================================================
+                      coef    std err          z      P>|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------
+const               0.4911      0.004    123.613      0.000       0.483       0.499
+economica_t         0.0706      0.008      8.749      0.000       0.055       0.086
+social_t            0.0594      0.012      5.104      0.000       0.037       0.082
+ambiental_t         0.0730      0.009      8.016      0.000       0.055       0.091
+institucional_t     0.0598      0.003     23.779      0.000       0.055       0.065
+===================================================================================
+R2 = 0.9014 | R2 ajustado = 0.8995 | F = 1427.9
+Wald H0: 4 coeficientes iguales -> estadistico=11.87, p=0.0078
+       variable  VIF
+    economica_t 3.83
+       social_t 7.92
+    ambiental_t 5.46
+institucional_t 1.30
+Breusch-Pagan p=0.5904 | Durbin-Watson=2.25 | Shapiro p=0.0000
+
+16 indicadores | n=213 R2=0.9150 R2aj=0.9080 | VIF max=10.9 (empleo_formal) | #VIF>10: 1 | n.condicion=106627
+OK: coeficientes = ecuaciones normales
+2020 ok
+2021 ok
+2022 ok
+2023 ok
+2024 ok
+
+PARTE B | 117 predicciones, objetivos 2020-2024
+                 MAE    RMSE     MAPE    sMAPE    n  n_mape  MAE_rel_persistencia
+model                                                                            
+persistencia  0.0648  0.0801  20.8095  18.7395  117     117                1.0000
+ar1           0.0678  0.0829  22.1886  19.1566  117     117                1.0463
+deriva        0.0693  0.0846  22.3164  20.2775  117     117                1.0699
+ols4          0.0730  0.0916  24.0668  20.5987  117     117                1.1262
+ridge         0.0802  0.0974  27.4656  24.8235  117     117                1.2373
+rf            0.0804  0.1000  27.8042  22.2775  117     117                1.2402
+xgb           0.0820  0.1000  28.4267  23.2719  117     117                1.2650
+ols16         0.0885  0.1048  27.2088  27.9065  117     117                1.3660
+
+Diferencia vs persistencia (negativo = mejor):
+          dMAE  MAE_lo  MAE_hi   dRMSE  RMSE_lo  RMSE_hi
+model                                                   
+ar1     0.0030  0.0014  0.0049  0.0029   0.0013   0.0044
+deriva  0.0045  0.0034  0.0054  0.0045   0.0040   0.0050
+ols4    0.0082  0.0057  0.0107  0.0116   0.0088   0.0143
+ridge   0.0154  0.0099  0.0213  0.0173   0.0112   0.0233
+rf      0.0156  0.0090  0.0225  0.0199   0.0108   0.0295
+xgb     0.0172  0.0099  0.0248  0.0200   0.0124   0.0265
+ols16   0.0237  0.0192  0.0282  0.0248   0.0192   0.0304
+
+=== 04_series_tiempo.py ===
+Territorios con IDR: 24 | serie completa 10 anios: 23 | incompletos: ['Callao']
+
+PARTE A | pronostico por territorio con su propia historia
+                     MAE    RMSE     MAPE    sMAPE    n  n_mape  MAE_rel_ingenuo  fallos_ajuste
+model                                                                                          
+ingenuo           0.0648  0.0801  20.8095  18.7395  117     117           1.0000              0
+ar1               0.0656  0.0817  21.1673  18.5706  117     117           1.0121              0
+ses               0.0705  0.0847  23.0554  20.1064  117     117           1.0877              0
+deriva            0.0717  0.0884  23.1098  20.7262  117     117           1.1069              0
+holt_amortiguado  0.0791  0.0986  25.2439  23.8530  117     117           1.2201              0
+
+Diferencia de MAE vs ingenuo (negativo = mejor):
+                    dMAE      lo      hi
+model                                   
+ar1               0.0008 -0.0040  0.0056
+ses               0.0057 -0.0002  0.0109
+deriva            0.0069  0.0055  0.0086
+holt_amortiguado  0.0143  0.0087  0.0199
+
+PARTE B | 23 territorios con serie completa
+IDR medio 2015=0.441 -> 2024=0.406 | Mann-Kendall tau=-0.29, p=0.2912 | Sen=-0.0085/anio [-0.0207; 0.0042]
+ADF (c, 0 rezagos, n=10): estadistico=-1.91, p=0.328, critico 5%=-3.29  <- potencia muy baja
+Sigma: CV 2015=0.530 -> 2024=0.484 | tau=-0.11, p=0.7275 | pendiente MCO=-0.0038/anio
+Beta: cambio anual = a + b*IDR2015 -> b=-0.0220, p=0.0017, R2=0.382
+OK: pendiente de Sen = mediana de pendientes por pares
+
+=== 05_validacion_cruzada.py ===
+Observaciones evaluables: 213 (objetivos 2016-2024), territorios: 24
+OK: particiones verificadas (sin solapamiento, cobertura completa, territorio/anio no visto, ventana solo con pasado)
+   en K-fold aleatorio, 100% de los pliegues entrena con anios POSTERIORES al de prueba
+
+1. K-fold aleatorio ok
+2. Un territorio fuera ok
+3. Un anio objetivo fuera ok
+4. Bloques de anios ok
+5. Ventana expansiva ok
+
+=== REGRESION | muestra: mismas 117 (2020-2024) ===
+modelo                       ols4  persistencia      rf   ridge
+esquema                                                        
+1. K-fold aleatorio        0.0631        0.0648  0.0668  0.0616
+2. Un territorio fuera     0.0627        0.0648  0.0904  0.0624
+3. Un anio objetivo fuera  0.0744        0.0648  0.0709  0.0755
+4. Bloques de anios        0.0641        0.0648  0.0662  0.0623
+5. Ventana expansiva       0.0730        0.0648  0.0786  0.0822
+
+=== REGRESION | muestra: todas las evaluadas ===
+modelo                       ols4  persistencia      rf   ridge
+esquema                                                        
+1. K-fold aleatorio        0.0562        0.0555  0.0618  0.0550
+2. Un territorio fuera     0.0559        0.0555  0.0911  0.0554
+3. Un anio objetivo fuera  0.0652        0.0555  0.0634  0.0658
+4. Bloques de anios        0.0647        0.0555  0.0689  0.0687
+5. Ventana expansiva       0.0730        0.0648  0.0786  0.0822
+
+=== CLASIFICACION | F1 macro (mismas 117) ===
+modelo                     logistica  persistencia
+esquema                                           
+1. K-fold aleatorio            0.795         0.766
+2. Un territorio fuera         0.792         0.766
+3. Un anio objetivo fuera      0.738         0.766
+4. Bloques de anios            0.756         0.766
+5. Ventana expansiva           0.702         0.766
+
+Variabilidad entre las 10 repeticiones del K-fold aleatorio (Ridge, MAE): sd=0.00076
+
+Sesgo medio de Ridge (pronostico - observado) por anio objetivo:
+esquema  3. Un anio objetivo fuera  4. Bloques de anios  5. Ventana expansiva
+year_y                                                                       
+2020                        0.0916               0.0860                0.0615
+2021                       -0.0480              -0.0281               -0.1217
+2022                       -0.0866              -0.0597               -0.0659
+2023                        0.0952               0.0669                0.1034
+2024                       -0.0231              -0.0231               -0.0231
+
+=== 06_figuras_y_resumen.py ===
+OK: figuras y JSON
+
+=== Pruebas (tests/) ===
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+rootdir: /home/claude/repo/investigacion
+plugins: platformdirs-4.13.0, anyio-4.15.1
+collecting ... collected 69 items
+
+tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[logistica] PASSED [  1%]
+tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[persistencia] PASSED [  2%]
+tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[random_forest] PASSED [  4%]
+tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[svm] PASSED [  5%]
+tests/test_clasificacion.py::test_resultados_coinciden_con_el_articulo[mayoritaria] PASSED [  7%]
+tests/test_clasificacion.py::test_ningun_modelo_gana_en_las_dos_metricas PASSED [  8%]
+tests/test_clasificacion.py::test_xgboost_coincide_con_el_articulo XFAIL [ 10%]
+tests/test_clasificacion.py::test_predicciones_solo_de_2020_a_2024 PASSED [ 11%]
+tests/test_datos.py::test_panel_tiene_250_filas_y_16_indicadores PASSED  [ 13%]
+tests/test_datos.py::test_panel_tiene_25_territorios_y_10_anios PASSED   [ 14%]
+tests/test_datos.py::test_cada_territorio_anio_aparece_una_sola_vez PASSED [ 15%]
+tests/test_datos.py::test_hay_71_valores_faltantes PASSED                [ 17%]
+tests/test_datos.py::test_porcentajes_entre_0_y_100 PASSED               [ 18%]
+tests/test_datos.py::test_lima_no_tiene_panel_completo PASSED            [ 20%]
+tests/test_indice_idr.py::test_calibracion_usa_72_casos_de_2015_a_2017 PASSED [ 21%]
+tests/test_indice_idr.py::test_cortes_de_jenks PASSED                    [ 23%]
+tests/test_indice_idr.py::test_se_reconstruyen_237_indices PASSED        [ 24%]
+tests/test_indice_idr.py::test_las_237_categorias_coinciden_con_las_publicadas PASSED [ 26%]
+tests/test_indice_idr.py::test_diferencia_maxima_con_el_idr_publicado_es_de_redondeo PASSED [ 27%]
+tests/test_indice_idr.py::test_cambiar_datos_futuros_no_altera_la_calibracion PASSED [ 28%]
+tests/test_mae.py::test_mae_calculado_a_mano PASSED                      [ 30%]
+tests/test_mae.py::test_mae_coincide_con_scikit_learn PASSED             [ 31%]
+tests/test_mae.py::test_mae_es_cero_si_el_pronostico_es_perfecto PASSED  [ 33%]
+tests/test_mae.py::test_mae_no_cambia_al_desplazar_la_escala PASSED      [ 34%]
+tests/test_mae.py::test_mae_ignora_pares_con_nan PASSED                  [ 36%]
+tests/test_mae.py::test_mae_rechaza_longitudes_distintas PASSED          [ 37%]
+tests/test_mape.py::test_mape_calculado_a_mano PASSED                    [ 39%]
+tests/test_mape.py::test_mape_coincide_con_scikit_learn PASSED           [ 40%]
+tests/test_mape.py::test_mape_excluye_observados_iguales_a_cero PASSED   [ 42%]
+tests/test_mape.py::test_mape_falla_si_todos_los_observados_son_cero PASSED [ 43%]
+tests/test_mape.py::test_mape_es_asimetrico PASSED                       [ 44%]
+tests/test_mape.py::test_mape_depende_del_origen_de_la_escala PASSED     [ 46%]
+tests/test_mase.py::test_mase_calculado_a_mano PASSED                    [ 47%]
+tests/test_mase.py::test_mase_rechaza_entrenamiento_de_un_solo_dato PASSED [ 49%]
+tests/test_mase.py::test_mase_rechaza_escala_nula PASSED                 [ 50%]
+tests/test_pares_temporales.py::test_hay_225_pares_y_213_con_objetivo_observable PASSED [ 52%]
+tests/test_pares_temporales.py::test_el_objetivo_es_siempre_el_anio_siguiente PASSED [ 53%]
+tests/test_pares_temporales.py::test_prueba_externa_tiene_117_objetivos_2020_2024 PASSED [ 55%]
+tests/test_r2.py::test_r2_coincide_con_scikit_learn PASSED               [ 56%]
+tests/test_r2.py::test_r2_es_uno_si_el_ajuste_es_perfecto PASSED         [ 57%]
+tests/test_r2.py::test_r2_es_nan_si_y_es_constante PASSED                [ 59%]
+tests/test_regresion_multiple.py::test_r2_descriptivo_de_la_regresion_con_4_dimensiones PASSED [ 60%]
+tests/test_regresion_multiple.py::test_mco_coincide_con_ecuaciones_normales PASSED [ 62%]
+tests/test_regresion_multiple.py::test_mco_16_indicadores_y_persistencia PASSED [ 63%]
+tests/test_regresion_multiple.py::test_ninguna_regresion_supera_a_la_persistencia PASSED [ 65%]
+tests/test_rmse.py::test_rmse_calculado_a_mano PASSED                    [ 66%]
+tests/test_rmse.py::test_rmse_coincide_con_scikit_learn PASSED           [ 68%]
+tests/test_rmse.py::test_rmse_siempre_mayor_o_igual_que_mae PASSED       [ 69%]
+tests/test_rmse.py::test_rmse_penaliza_mas_un_error_grande PASSED        [ 71%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[ingenuo] PASSED [ 72%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[ar1] PASSED [ 73%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[ses] PASSED [ 75%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[deriva] PASSED [ 76%]
+tests/test_series_tiempo.py::test_errores_coinciden_con_el_articulo[holt_amortiguado] PASSED [ 78%]
+tests/test_series_tiempo.py::test_el_ingenuo_tiene_el_menor_error PASSED [ 79%]
+tests/test_series_tiempo.py::test_ingenuo_repite_el_valor_del_anio_anterior PASSED [ 81%]
+tests/test_smape.py::test_smape_calculado_a_mano PASSED                  [ 82%]
+tests/test_smape.py::test_smape_esta_entre_0_y_200 PASSED                [ 84%]
+tests/test_smape.py::test_smape_maximo_es_200 PASSED                     [ 85%]
+tests/test_smape.py::test_smape_cero_entre_cero_vale_cero PASSED         [ 86%]
+tests/test_smape.py::test_smape_es_simetrico PASSED                      [ 88%]
+tests/test_smape.py::test_smape_es_cero_si_el_pronostico_es_perfecto PASSED [ 89%]
+tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[2. Un territorio fuera] PASSED [ 91%]
+tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[3. Un anio objetivo fuera] PASSED [ 92%]
+tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[4. Bloques de anios] PASSED [ 94%]
+tests/test_validacion_cruzada.py::test_mae_de_ridge_coincide_con_el_articulo[5. Ventana expansiva] PASSED [ 95%]
+tests/test_validacion_cruzada.py::test_kfold_aleatorio_parece_mejor_que_la_persistencia PASSED [ 97%]
+tests/test_validacion_cruzada.py::test_ventana_expansiva_es_peor_que_la_persistencia PASSED [ 98%]
+tests/test_validacion_cruzada.py::test_todos_los_esquemas_evaluan_las_mismas_117_observaciones PASSED [100%]
+
+======================== 68 passed, 1 xfailed in 1.71s =========================
